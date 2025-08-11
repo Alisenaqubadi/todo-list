@@ -20,8 +20,8 @@ module.exports = {
   },
   plugins: [
       new HtmlWebpackPlugin({
-        // where is the indexedDB.html or main page is
-        template: "./src/template.html", 
+        // where is the index.html or main page is
+        template: "./src/index.html", 
     }),
   ],
   module: {
