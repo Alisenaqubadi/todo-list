@@ -1,6 +1,8 @@
-import "./style.css";
-import "./list.css";
-import { Create, Write, sleep } from "./function.js";
+import "./styles/style.css";
+import "./styles/list.css";
+import "./styles/right-panel.css"
+import { Create, Write, sleep } from "./js/function.js";
+import newListIcon from './imgs/new-list.svg';
 
 const add_button = document.getElementsByClassName("img")[0];
 const input = document.querySelector("input");
@@ -81,3 +83,21 @@ async function removeTask(newBox,boxContainer) {
     boxContainer.parentElement.remove();
 }
 }
+
+const createListButton = document.getElementById("create-list")
+let listId = 0;
+createListButton.addEventListener("click", ()=> {
+    listId++;
+    Create("div",".right-panel",`new-list`)
+
+    let newlist = document.getElementsByClassName("new-list")[listId - 1]
+    newlist.innerHTML = `<img src="${newListIcon}" alt=""> <input type="text" class="new-input">`;
+    let newInput = newlist.getElementsByClassName("new-input")[0];
+    newInput.focus();
+    newInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        let newInputValue = newlist.querySelector("input").value;
+        newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+    }
+});
+})

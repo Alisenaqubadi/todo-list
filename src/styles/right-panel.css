@@ -1,0 +1,29 @@
+.right-panel {
+    display: grid;
+    grid-template-rows: repeat(auto-fill,6vh);
+    padding-left: 1%;
+}
+
+.my-tasks {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.new-list {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.new-input {
+    width: 85%;
+}
+
+.new-input:focus-visible {
+    outline: 2px solid white;
+
+}
+
+.create-list {
+    display: grid;
+    grid-area: -2;
+}
