@@ -2,6 +2,7 @@ import "./styles/style.css";
 import "./styles/list.css";
 import "./styles/right-panel.css"
 import { Create, Write, sleep } from "./js/function.js";
+import { testjs } from "./js/test.js"
 import newListIcon from './imgs/new-list.svg';
 
 const add_button = document.getElementsByClassName("img")[0];
@@ -88,16 +89,35 @@ const createListButton = document.getElementById("create-list")
 let listId = 0;
 createListButton.addEventListener("click", ()=> {
     listId++;
-    Create("div",".right-panel",`new-list`)
+    Create("div", ".right-panel", `new-list list-${listId}`);
 
-    let newlist = document.getElementsByClassName("new-list")[listId - 1]
+    let newlist = document.querySelector(`.list-${listId}`);
     newlist.innerHTML = `<img src="${newListIcon}" alt=""> <input type="text" class="new-input">`;
     let newInput = newlist.getElementsByClassName("new-input")[0];
     newInput.focus();
+
     newInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        let newInputValue = newlist.querySelector("input").value;
-        newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
-    }
-});
+        if (e.key === "Enter") {
+            const newInputValue = newInput.value.trim();
+            if (newInputValue !== "") {
+                newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+            } else {
+                newlist.remove(); // remove empty list
+            }
+        }
+    });
+
+    newInput.addEventListener("blur", async () => {
+        await sleep(300); // small delay to let focus events settle
+        const newInputValue = newInput.value.trim();
+
+        if (newInputValue !== "") {
+            newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+        } else {
+            newlist.remove(); // delete if empty
+        }
+    });
+
 })
+
+testjs();
