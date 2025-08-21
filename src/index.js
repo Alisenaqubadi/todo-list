@@ -3,7 +3,10 @@ import "./styles/list.css";
 import "./styles/right-panel.css"
 import { Create, Write, sleep } from "./js/function.js";
 import { testjs } from "./js/test.js"
+import { savejs } from "./js/save.js"
 import newListIcon from './imgs/new-list.svg';
+
+let list_detector = 1;
 
 const add_button = document.getElementsByClassName("img")[0];
 const input = document.querySelector("input");
@@ -119,5 +122,7 @@ createListButton.addEventListener("click", ()=> {
     });
 
 })
+
+savejs();
 
 testjs();
