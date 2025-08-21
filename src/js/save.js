@@ -18,7 +18,6 @@ function savejs() {
 }
 
 function MainSave() {
-    localStorage.clear()
     if(row.length > 1){
     Array.from(row).forEach((el)=> {
     const title = el.getElementsByClassName("cell")[1]

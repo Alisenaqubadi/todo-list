@@ -2,9 +2,12 @@ import "./styles/style.css";
 import "./styles/list.css";
 import "./styles/right-panel.css"
 import { Create, Write, sleep } from "./js/function.js";
-import { testjs } from "./js/test.js"
-import { savejs } from "./js/save.js"
+import { testjs } from "./js/test.js";
+import { savejs } from "./js/save.js";
+import { writedatas, getListId, setListId } from "./js/writedatas.js";
+import { rightPanel } from "./js/right-panel.js"
 import newListIcon from './imgs/new-list.svg';
+
 
 let list_detector = 1;
 
@@ -89,9 +92,12 @@ async function removeTask(newBox,boxContainer) {
 }
 
 const createListButton = document.getElementById("create-list")
-let listId = 0;
-createListButton.addEventListener("click", ()=> {
+
+createListButton.addEventListener("click", () => {
+    let listId = getListId(); // Get the current value
     listId++;
+    setListId(listId); // Update the value in writedatas.js
+
     Create("div", ".right-panel", `new-list list-${listId}`);
 
     let newlist = document.querySelector(`.list-${listId}`);
@@ -104,6 +110,7 @@ createListButton.addEventListener("click", ()=> {
             const newInputValue = newInput.value.trim();
             if (newInputValue !== "") {
                 newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+                rightPanel();
             } else {
                 newlist.remove(); // remove empty list
             }
@@ -116,13 +123,18 @@ createListButton.addEventListener("click", ()=> {
 
         if (newInputValue !== "") {
             newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+            rightPanel(newInputValue);
         } else {
             newlist.remove(); // delete if empty
         }
     });
 
+    
 })
 
 savejs();
+
+
+writedatas();
 
 testjs();
