@@ -1,7 +1,6 @@
-import { Create, Write } from "./function";
+import { Create, Write } from "./function.js";
 import newListIcon from "../imgs/new-list.svg";
-import { ColorChanging, removeTask } from "..";
-import { tasks, list_detector } from "..";
+import { ColorChanging, removeTask } from "../index.js"; // Adjust path as needed
 
 let listId = 0; // internal variable (not exported directly)
 let task = 0;
@@ -38,10 +37,21 @@ function setListId(newId) {
   listId = newId;
 }
 
+// Getter for task count
+function getTaskCount() {
+  return task;
+}
+
+// Setter to update task count
+function setTaskCount(newCount) {
+  task = newCount;
+  localStorage.setItem("task", task);
+}
+
 function mainListRebuilt(list_detector) {
   let maxTaskIndex = 0; // Track the highest task index
 
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 1; i < 10000; i++) { // Start from 1 since your main function starts at 1
     let titleTask = localStorage.getItem(`a2${i}${list_detector}`);
     if (titleTask !== null) {
       let dueDate = localStorage.getItem(`a3${i}${list_detector}`);
@@ -55,14 +65,14 @@ function mainListRebuilt(list_detector) {
       const date = document.createElement("input");
       date.type = "date";
       date.className = `date cell a3${i}`;
-      date.value = dueDate;
+      date.value = dueDate || ""; // Handle null values
       document.querySelector(`.list-${i}`).appendChild(date);
 
       Create("div", `.list-${i}`, `cell a4${i}`, `cell-${i}`);
-      document.getElementById(`cell-${i}`).textContent = Description;
+      document.getElementById(`cell-${i}`).textContent = Description || "";
       document.getElementById(`cell-${i}`).contentEditable = "true";
 
-      Create("div", `.list-${i}`, `cell a5${i} `);
+      Create("div", `.list-${i}`, `cell a5${i}`);
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
@@ -73,8 +83,8 @@ function mainListRebuilt(list_detector) {
 
       Create("div", `.a5${i}`, "priority");
       const newPriority = document.querySelector(`.a5${i} .priority`);
-      newPriority.textContent = priority;
-      newPriority.style.backgroundColor = prioritycolor(priority); // set initial background color
+      newPriority.textContent = priority || "Medium";
+      newPriority.style.backgroundColor = prioritycolor(priority || "Medium");
 
       newPriority.addEventListener("click", () => {
         ColorChanging(newPriority);
@@ -91,27 +101,31 @@ function mainListRebuilt(list_detector) {
         localStorage.removeItem(`a5${i}${list_detector}`);
       });
 
-      maxTaskIndex = i; // Update the highest task index
+      maxTaskIndex = i; // Update the highest task index found
     }
   }
-
+  
+  // Set task to the highest index found, so new tasks continue from the right number
   task = maxTaskIndex;
-  localStorage.setItem("task",task) // Set the task variable to the highest index
+  localStorage.setItem("task", task);
 }
 
-
 function prioritycolor(priority) {
-  if (priority == "Medium") {
+  if (priority === "Medium") {
     return "green";
-  } else if (priority == "High") {
+  } else if (priority === "High") {
     return "red";
-  } else {
+  } else if (priority === "Low") {
     return "black";
+  } else {
+    return "green"; // Default fallback
   }
 }
 
 export {
   writedatas,
   getListId,
-  setListId,// Export the setter
+  setListId,
+  getTaskCount,
+  setTaskCount
 };
