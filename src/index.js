@@ -4,15 +4,16 @@ import "./styles/right-panel.css"
 import { Create, Write, sleep } from "./js/function.js";
 import { testjs } from "./js/test.js";
 import { savejs } from "./js/save.js";
-import { writedatas, getListId, setListId } from "./js/writedatas.js";
+import { writedatas, getListId, setListId, getTaskCount, setTaskCount} from "./js/writedatas.js";
 import { rightPanel } from "./js/right-panel.js"
 import newListIcon from './imgs/new-list.svg';
 
-
-let list_detector = 1;
+export let list_detector = "Task";
 
 const add_button = document.getElementsByClassName("img")[0];
 const input = document.querySelector("input");
+
+// Initialize tasks - will be set after writedatas runs
 let tasks = 0;
 
 add_button.addEventListener("click", () => {
@@ -27,7 +28,10 @@ input.addEventListener("keydown", (e) => {
 
 function main(inputElement, inputValue) {
     if (inputValue.trim() !== "") {
+        console.log(`${tasks} is`)
         tasks++;
+        setTaskCount(tasks); // Keep localStorage in sync
+        
         Create("div", ".list", `row list-${tasks}`);
         Create("div", `.list-${tasks}`, `cell a1${tasks}`);
         Create("div", `.list-${tasks}`, `cell a2${tasks}`);
@@ -63,6 +67,10 @@ function main(inputElement, inputValue) {
         const newBox = boxContainer.querySelector(`.box`);
         newBox.addEventListener("change", () => {
             removeTask(newBox, boxContainer);
+            localStorage.removeItem(`a2${tasks}${list_detector}`);
+            localStorage.removeItem(`a3${tasks}${list_detector}`);
+            localStorage.removeItem(`a4${tasks}${list_detector}`);
+            localStorage.removeItem(`a5${tasks}${list_detector}`);
         });
 
         inputElement.value = "";
@@ -84,11 +92,10 @@ function ColorChanging(element) {
     }
 }
 
-async function removeTask(newBox,boxContainer) {
+function removeTask(newBox, boxContainer) {
     if (newBox.checked) {
-    await sleep(2000);
-    boxContainer.parentElement.remove();
-}
+        boxContainer.parentElement.remove();
+    }
 }
 
 const createListButton = document.getElementById("create-list")
@@ -98,9 +105,9 @@ createListButton.addEventListener("click", () => {
     listId++;
     setListId(listId); // Update the value in writedatas.js
 
-    Create("div", ".right-panel", `new-list list-${listId}`);
+    Create("div", ".right-panel", `new-list right-list-${listId}`);
 
-    let newlist = document.querySelector(`.list-${listId}`);
+    let newlist = document.querySelector(`.right-list-${listId}`);
     newlist.innerHTML = `<img src="${newListIcon}" alt=""> <input type="text" class="new-input">`;
     let newInput = newlist.getElementsByClassName("new-input")[0];
     newInput.focus();
@@ -128,13 +135,16 @@ createListButton.addEventListener("click", () => {
             newlist.remove(); // delete if empty
         }
     });
-
-    
 })
 
-savejs();
+// Initialize data and then set the correct task count
+writedatas(list_detector);
+tasks = getTaskCount(); // Get the correct count after restoration
 
-
-writedatas();
-
+savejs(list_detector);
 testjs();
+
+export {
+    ColorChanging,
+    removeTask,
+}
