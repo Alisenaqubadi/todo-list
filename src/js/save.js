@@ -1,11 +1,12 @@
 const container = document.getElementById("list");
 const row = document.getElementsByClassName("row");
 
-function savejs() {
+function savejs(list_detector) {
     const observer = new MutationObserver((mutationList) => {
         for(let mutation of mutationList){
             console.log("was fired")
-            MainSave();
+            let list_detector1 = list_detector;
+            MainSave(list_detector1);
         }
     });
 
@@ -17,7 +18,7 @@ function savejs() {
     });
 }
 
-function MainSave() {
+function MainSave(list_detector) {
     if(row.length > 1){
     Array.from(row).forEach((el)=> {
     const title = el.getElementsByClassName("cell")[1]
@@ -62,7 +63,7 @@ function MainSave() {
 
     if (dueDate) { // Add this check
         dueDate.addEventListener("change",()=>{
-            MainSave();
+            MainSave(list_detector);
         })
     }
     
@@ -76,12 +77,12 @@ function MainSave() {
         priorityTxt = priority.innerText;
     }
 
-    localStorage.setItem(`${titleSecondClass}`,`${titleTxt}`)
+    localStorage.setItem(`${titleSecondClass}${list_detector}`,`${titleTxt}`)
     if (dueDate) { // Add this check
-        localStorage.setItem(`${dueDateSecondClass}`,`${dueDate.value}`)
+        localStorage.setItem(`${dueDateSecondClass}${list_detector}`,`${dueDate.value}`)
     }
-    localStorage.setItem(`${DescriptionSecondClass}`,`${DescriptionTxt}`)
-    localStorage.setItem(`${prioritySecondClass}`,`${priorityTxt}`)
+    localStorage.setItem(`${DescriptionSecondClass}${list_detector}`,`${DescriptionTxt}`)
+    localStorage.setItem(`${prioritySecondClass}${list_detector}`,`${priorityTxt}`)
     })
 }}
 
