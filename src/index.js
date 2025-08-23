@@ -4,6 +4,7 @@ import "./styles/right-panel.css"
 import { Create, Write, sleep } from "./js/function.js";
 import { testjs } from "./js/test.js";
 import { savejs } from "./js/save.js";
+import { switchList } from "./js/switch-list.js";
 import { writedatas, getListId, setListId, getTaskCount, setTaskCount} from "./js/writedatas.js";
 import { rightPanel } from "./js/right-panel.js"
 import newListIcon from './imgs/new-list.svg';
@@ -18,13 +19,89 @@ let tasks = 0;
 
 add_button.addEventListener("click", () => {
     main(input, input.value);
+    // Save after adding task
+    setTimeout(() => {
+        savePage();
+    }, 100);
 });
 
 input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         main(input, input.value);
+        // Save after adding task
+        setTimeout(() => {
+            savePage();
+        }, 100);
     }
 });
+
+// Function to manually save the page
+function savePage() {
+    const row = document.getElementsByClassName("row");
+    if(row.length > 0){
+        Array.from(row).forEach((el)=> {
+            const title = el.getElementsByClassName("cell")[1]
+            const dueDate = el.getElementsByClassName("cell")[2]
+            const Description = el.getElementsByClassName("cell")[3]
+            const PriorityCell = el.getElementsByClassName("cell")[4]
+            let priority;
+
+            let priorityClasses = [];
+            if (PriorityCell) {
+                priority = PriorityCell.querySelector(".priority")
+                priorityClasses = PriorityCell.classList;
+            }
+            
+            let titleClasses = [];
+            if (title) {
+                titleClasses = title.classList;
+            }
+
+            let dueDateClasses = [];
+            if (dueDate) {
+                dueDateClasses = dueDate.classList;
+            }
+
+            let DescriptionClasses = [];
+            if (Description) {
+                DescriptionClasses = Description.classList;
+            }
+
+            const titleSecondClass = titleClasses[1]     
+            const dueDateSecondClass = dueDateClasses[2] 
+            const DescriptionSecondClass = DescriptionClasses[1] 
+            const prioritySecondClass = priorityClasses[1]     
+
+            let titleTxt = '';
+            if (title) {
+                titleTxt = title.innerText;
+            }
+            
+            let DescriptionTxt = '';
+            if (Description) {
+                DescriptionTxt = Description.innerText;
+            }
+
+            let priorityTxt = '';
+            if (priority) {
+                priorityTxt = priority.innerText;
+            }
+
+            if (titleSecondClass) {
+                localStorage.setItem(`${titleSecondClass}${list_detector}`, `${titleTxt}`);
+            }
+            if (dueDate && dueDateSecondClass) {
+                localStorage.setItem(`${dueDateSecondClass}${list_detector}`, `${dueDate.value}`);
+            }
+            if (DescriptionSecondClass) {
+                localStorage.setItem(`${DescriptionSecondClass}${list_detector}`, `${DescriptionTxt}`);
+            }
+            if (prioritySecondClass) {
+                localStorage.setItem(`${prioritySecondClass}${list_detector}`, `${priorityTxt}`);
+            }
+        })
+    }
+}
 
 function main(inputElement, inputValue) {
     if (inputValue.trim() !== "") {
@@ -98,6 +175,11 @@ function removeTask(newBox, boxContainer) {
     }
 }
 
+// Function to handle list switching - single place for event handling
+function handleListClick(listName) {
+    switchList(listName);
+}
+
 const createListButton = document.getElementById("create-list")
 
 createListButton.addEventListener("click", () => {
@@ -117,6 +199,10 @@ createListButton.addEventListener("click", () => {
             const newInputValue = newInput.value.trim();
             if (newInputValue !== "") {
                 newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+                // Store the list name in localStorage
+                localStorage.setItem(`right-list-${listId}`, newInputValue);
+                // Add event listener ONCE using the centralized handler
+                newlist.addEventListener("click", () => handleListClick(newInputValue), { once: false });
                 rightPanel();
             } else {
                 newlist.remove(); // remove empty list
@@ -129,7 +215,12 @@ createListButton.addEventListener("click", () => {
         const newInputValue = newInput.value.trim();
 
         if (newInputValue !== "") {
+            // Reset innerHTML to remove any existing event listeners
             newlist.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
+            // Store the list name in localStorage
+            localStorage.setItem(`right-list-${listId}`, newInputValue);
+            // Add the event listener ONCE using the centralized handler
+            newlist.addEventListener("click", () => handleListClick(newInputValue), { once: false });
             rightPanel(newInputValue);
         } else {
             newlist.remove(); // delete if empty
@@ -137,14 +228,28 @@ createListButton.addEventListener("click", () => {
     });
 })
 
+function setNewList_detector(a){
+    list_detector = a; 
+    console.log(list_detector);   
+}
+
 // Initialize data and then set the correct task count
 writedatas(list_detector);
+
 tasks = getTaskCount(); // Get the correct count after restoration
 
 savejs(list_detector);
+
 testjs();
+
+const hahahahaiamout = document.getElementsByClassName("my-tasks")[0];
+hahahahaiamout.addEventListener("click",()=>{
+    location.reload();
+})
 
 export {
     ColorChanging,
     removeTask,
+    setNewList_detector,
+    handleListClick
 }

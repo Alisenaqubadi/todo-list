@@ -1,6 +1,6 @@
 import { Create, Write } from "./function.js";
 import newListIcon from "../imgs/new-list.svg";
-import { ColorChanging, removeTask } from "../index.js"; // Adjust path as needed
+import { ColorChanging, removeTask, handleListClick } from "../index.js"; // Import the centralized handler
 
 let listId = 0; // internal variable (not exported directly)
 let task = 0;
@@ -11,6 +11,16 @@ function writedatas(list_detector) {
 }
 
 function rightPanelRebuilt() {
+  // Clear existing right panel lists first to prevent duplicates
+  const rightPanel = document.querySelector(".right-panel");
+  const existingLists = rightPanel.querySelectorAll('.new-list');
+  existingLists.forEach(list => {
+    // Only remove if it's not the create-list button
+    if (!list.id || list.id !== 'create-list') {
+      list.remove();
+    }
+  });
+
   for (let i = 0; i < 100; i++) {
     let newList = localStorage.getItem(`right-list-${i}`);
     if (newList !== null) {
@@ -22,6 +32,9 @@ function rightPanelRebuilt() {
       let newInputValue = newList;
       lastchild.innerHTML = `<img src="${newListIcon}" alt=""> <h1>${newInputValue}</h1>`;
 
+      // Add the event listener using the centralized handler from index.js
+      // This prevents duplicate event listeners
+      lastchild.addEventListener("click", () => handleListClick(newInputValue), { once: false });
       listId = i; // ✅ update variable
     }
   }
@@ -49,6 +62,14 @@ function setTaskCount(newCount) {
 }
 
 function mainListRebuilt(list_detector) {
+  // CLEAR EXISTING TASKS FIRST
+  const listContainer = document.querySelector(".list");
+  if (listContainer) {
+    // Remove all existing task rows
+    const existingRows = listContainer.querySelectorAll('.row');
+    existingRows.forEach(row => row.remove());
+  }
+
   let maxTaskIndex = 0; // Track the highest task index
 
   for (let i = 1; i < 10000; i++) { // Start from 1 since your main function starts at 1
@@ -104,7 +125,7 @@ function mainListRebuilt(list_detector) {
       maxTaskIndex = i; // Update the highest task index found
     }
   }
-  
+
   // Set task to the highest index found, so new tasks continue from the right number
   task = maxTaskIndex;
   localStorage.setItem("task", task);

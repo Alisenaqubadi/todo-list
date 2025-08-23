@@ -1,12 +1,14 @@
+import { list_detector } from "../index.js";
+
 const container = document.getElementById("list");
 const row = document.getElementsByClassName("row");
 
-function savejs(list_detector) {
+function savejs(list_detector_param) {
     const observer = new MutationObserver((mutationList) => {
         for(let mutation of mutationList){
             console.log("was fired")
-            let list_detector1 = list_detector;
-            MainSave(list_detector1);
+            // Use the imported list_detector instead of the parameter
+            MainSave(list_detector);
         }
     });
 
@@ -88,4 +90,5 @@ function MainSave(list_detector) {
 
 export {
     savejs,
+    MainSave,
 }

@@ -3,7 +3,6 @@ function rightPanel(newInputValue) {
     let classList = []
     classList = lastElement.classList;
     const secondClass = classList[1];
-    console.log(classList)
     localStorage.setItem(secondClass, newInputValue);
 }
 

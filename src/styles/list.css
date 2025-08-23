@@ -16,6 +16,13 @@
     gap: 0px;
 }
 
+.rowtitle {
+    display: grid;
+    grid-template-columns: 8vw 20vw min(16vw,160px) 1fr min(10vw,90px);
+    grid-template-rows: repeat(auto-fill,6vh);
+    gap: 0px;
+}
+
 .cell {
     background: var(--gray-color);
     border: solid black 1px;
