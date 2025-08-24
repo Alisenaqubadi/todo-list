@@ -1,9 +1,9 @@
 function rightPanel(newInputValue) {
-    const lastElement = document.querySelector(".new-list:last-child");
-    let classList = []
-    classList = lastElement.classList;
-    const secondClass = classList[1];
-    localStorage.setItem(secondClass, newInputValue);
+  const lastElement = document.querySelector('.new-list:last-child')
+  let classList = []
+  classList = lastElement.classList
+  const secondClass = classList[1]
+  localStorage.setItem(secondClass, newInputValue)
 }
 
-export { rightPanel };
+export { rightPanel }
